@@ -57,23 +57,42 @@ func main() {
     print(crates)
 //    print(instructions)
 
+    let arrangedCrates = part2(crates, instructions: instructions)
+    print(arrangedCrates)
+
+    printResult(crates: arrangedCrates)
+}
+
+func part1(_ initialCrates: [Int: [Character]], instructions: [String]) -> [Int: [Character]] {
+    var crates = initialCrates
     for instruction in instructions {
         let parsedInstructions = parseLine(instruction)
-        print(parsedInstructions.from, crates[parsedInstructions.from]!)
-        print(parsedInstructions.to, crates[parsedInstructions.to]!)
-        print("executing: ", parsedInstructions)
         for _ in 0..<parsedInstructions.count {
             let crate = crates[parsedInstructions.from]!.removeFirst()
             crates[parsedInstructions.to]!.insert(crate, at: 0)
         }
     }
-    
-    print(crates)
+    return crates
+}
 
+func part2(_ initialCrates: [Int: [Character]], instructions: [String]) -> [Int: [Character]] {
+    var crates = initialCrates
+    for instruction in instructions {
+        let parsedInstructions = parseLine(instruction)
+        var tempCrates = [Character]()
+        for _ in 0..<parsedInstructions.count {
+            tempCrates.append(crates[parsedInstructions.from]!.removeFirst())
+        }
+        crates[parsedInstructions.to]!.insert(contentsOf: tempCrates, at: 0)
+    }
+    return crates
+}
+
+func printResult(crates: [Int: [Character]]) {
     var result = [Character]()
-    for i in 1...crateCount {
-        if !crates[i]!.isEmpty {
-            result.append(crates[i]!.first!)
+    for key in crates.keys.sorted() {
+        if !crates[key]!.isEmpty {
+            result.append(crates[key]!.first!)
         }
     }
     print(String(result))
